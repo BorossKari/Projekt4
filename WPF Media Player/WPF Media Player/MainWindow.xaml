@@ -1,0 +1,36 @@
+﻿<Window x:Class="WPF_Media_Player.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:WPF_Media_Player"
+        mc:Ignorable="d"
+        Title="Audio player" Height="450" Width="515">
+    <Grid>
+        <Button Content="⏯️" HorizontalAlignment="Left" Margin="38,32,0,0" VerticalAlignment="Top" Width="44" Height="44" FontSize="30"/>
+        <Button Content="⏹" HorizontalAlignment="Left" Margin="114,32,0,0" VerticalAlignment="Top" Width="44" Height="44" FontSize="30"/>
+        <Button Content="⏮️" HorizontalAlignment="Left" Margin="189,32,0,0" VerticalAlignment="Top" Width="44" Height="44" FontSize="30"/>
+        <Button Content="⏭️" HorizontalAlignment="Left" Margin="266,32,0,0" VerticalAlignment="Top" Width="44" Height="44" FontSize="30"/>
+        <Button Content="Add song(s)..." HorizontalAlignment="Left" Margin="38,292,0,0" VerticalAlignment="Top" Width="183" FontSize="15"/>
+        <Button Content="🔁️" HorizontalAlignment="Left" Margin="342,32,0,0" VerticalAlignment="Top" Width="44" Height="44" FontSize="30"/>
+        <ListBox HorizontalAlignment="Left" Height="148" Margin="38,129,0,0" VerticalAlignment="Top" Width="348"/>
+        <Slider HorizontalAlignment="Left" Margin="215,98,0,0" VerticalAlignment="Top" Height="18" Width="171"/>
+        <Slider HorizontalAlignment="Left" Margin="348,195,0,0" VerticalAlignment="Top" Width="150" RenderTransformOrigin="0.5,0.5">
+            <Slider.RenderTransform>
+                <TransformGroup>
+                    <ScaleTransform/>
+                    <SkewTransform/>
+                    <RotateTransform Angle="-90"/>
+                    <TranslateTransform/>
+                </TransformGroup>
+            </Slider.RenderTransform>
+        </Slider>
+        <Label Content="Playlist" HorizontalAlignment="Left" Margin="38,88,0,0" VerticalAlignment="Top" Width="84" FontSize="20"/>
+        <Label Content="0:00" HorizontalAlignment="Left" Margin="136,88,0,0" VerticalAlignment="Top" FontSize="20" Width="61" HorizontalContentAlignment="Right"/>
+        <Button Content="Remove selected song" HorizontalAlignment="Left" Margin="38,346,0,0" VerticalAlignment="Top" Width="183" FontSize="15"/>
+        <Label Content="VOL" HorizontalAlignment="Left" Margin="408,99,0,0" VerticalAlignment="Top"/>
+        <Button Content="Save playlist..." HorizontalAlignment="Left" Margin="254,292,0,0" VerticalAlignment="Top" Width="183" FontSize="15"/>
+        <Button Content="Load playlist..." HorizontalAlignment="Left" Margin="254,346,0,0" VerticalAlignment="Top" Width="183" FontSize="15"/>
+
+    </Grid>
+</Window>
