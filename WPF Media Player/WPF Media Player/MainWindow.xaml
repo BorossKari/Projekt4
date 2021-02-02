@@ -5,32 +5,24 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:WPF_Media_Player"
         mc:Ignorable="d"
-        Title="Audio player" Height="450" Width="515">
-    <Grid x:Name="AudioPlayerContent">
+        Title="Audio player" Height="436" Width="788" ResizeMode="CanMinimize" Icon="Headphones_Icon.png">
+    <Grid x:Name="AudioPlayerContent" Background="#FFC3C2C2">
         <Button x:Name="PlayPauseButton" Content="⏯️" HorizontalAlignment="Left" Margin="38,32,0,0" VerticalAlignment="Top" Width="44" Height="44" FontSize="30" Click="PlayPauseButton_Click"/>
-        <Button x:Name="StopButton" Content="⏹" HorizontalAlignment="Left" Margin="114,32,0,0" VerticalAlignment="Top" Width="44" Height="44" FontSize="30" Click="StopButton_Click"/>
-        <Button x:Name="PrevButton" Content="⏮️" HorizontalAlignment="Left" Margin="189,32,0,0" VerticalAlignment="Top" Width="44" Height="44" FontSize="30" Click="PrevButton_Click"/>
-        <Button x:Name="NextButton" Content="⏭️" HorizontalAlignment="Left" Margin="266,32,0,0" VerticalAlignment="Top" Width="44" Height="44" FontSize="30" Click="NextButton_Click"/>
-        <Button x:Name="RepeatButton" Content="🔁️" HorizontalAlignment="Left" Margin="342,32,0,0" VerticalAlignment="Top" Width="44" Height="44" FontSize="30" Click="RepeatButton_Click"/>
-        <ListBox x:Name="PlayList" HorizontalAlignment="Left" Height="148" Margin="38,129,0,0" VerticalAlignment="Top" Width="348"/>
-        <Slider x:Name="TimeSlider" Thumb.DragStarted="TimeSlider_DragStarted" Thumb.DragCompleted="TimeSlider_DragCompleted" HorizontalAlignment="Left" Margin="215,98,0,0" VerticalAlignment="Top" Height="18" Width="171" ValueChanged="TimeSlider_ValueChanged" IsEnabled="False"/>
-        <Slider x:Name="VolumeSlider" HorizontalAlignment="Left" Margin="348,195,0,0" VerticalAlignment="Top" Width="150" RenderTransformOrigin="0.5,0.5">
-            <Slider.RenderTransform>
-                <TransformGroup>
-                    <ScaleTransform/>
-                    <SkewTransform/>
-                    <RotateTransform Angle="-90"/>
-                    <TranslateTransform/>
-                </TransformGroup>
-            </Slider.RenderTransform>
-        </Slider>
-        <Label Content="Playlist" HorizontalAlignment="Left" Margin="38,88,0,0" VerticalAlignment="Top" Width="84" FontSize="20"/>
-        <Label x:Name="TimeLabel" Content="00:00" HorizontalAlignment="Left" Margin="136,88,0,0" VerticalAlignment="Top" FontSize="20" Width="61" HorizontalContentAlignment="Right"/>
-        <Button x:Name="Removesong" Content="Remove selected song" HorizontalAlignment="Left" Margin="38,346,0,0" VerticalAlignment="Top" Width="183" FontSize="15" Click="Removesong_Click"/>
-        <Label Content="VOL" HorizontalAlignment="Left" Margin="408,99,0,0" VerticalAlignment="Top"/>
-        <Button x:Name="Saveplaylist" Content="Save playlist..." HorizontalAlignment="Left" Margin="254,292,0,0" VerticalAlignment="Top" Width="183" FontSize="15" Click="Saveplaylist_Click"/>
-        <Button x:Name="Loadplaylist" Content="Load playlist..." HorizontalAlignment="Left" Margin="254,346,0,0" VerticalAlignment="Top" Width="183" FontSize="15" Click="Loadplaylist_Click"/>
-        <Button x:Name="Opensongs" Content="Open song(s)..." HorizontalAlignment="Left" Margin="38,292,0,0" VerticalAlignment="Top" Width="183" FontSize="15" Click="Opensongs_Click"/>
+        <Button x:Name="StopButton" Content="⏹" HorizontalAlignment="Left" Margin="106,32,0,0" VerticalAlignment="Top" Width="44" Height="44" FontSize="30" Click="StopButton_Click"/>
+        <Button x:Name="PrevButton" Content="⏮️" HorizontalAlignment="Left" Margin="174,32,0,0" VerticalAlignment="Top" Width="44" Height="44" FontSize="30" Click="PrevButton_Click"/>
+        <Button x:Name="NextButton" Content="⏭️" HorizontalAlignment="Left" Margin="242,32,0,0" VerticalAlignment="Top" Width="44" Height="44" FontSize="30" Click="NextButton_Click"/>
+        <Button x:Name="RepeatButton" Content="🔁️" HorizontalAlignment="Left" Margin="310,32,0,0" VerticalAlignment="Top" Width="44" Height="44" FontSize="30" Click="RepeatButton_Click"/>
+        <ListBox x:Name="PlayList" HorizontalAlignment="Left" Height="148" Margin="35,135,0,0" VerticalAlignment="Top" Width="646" MouseDoubleClick="PlayList_DoubleClick"/>
+        <Slider x:Name="TimeSlider" Thumb.DragStarted="TimeSlider_DragStarted" Thumb.DragCompleted="TimeSlider_DragCompleted" HorizontalAlignment="Left" Margin="343,97,0,0" VerticalAlignment="Top" Height="18" Width="335" ValueChanged="TimeSlider_ValueChanged" IsEnabled="False" IsTabStop="False" LargeChange="0"/>
+        <Slider x:Name="VolumeSlider" HorizontalAlignment="Left" Margin="706,175,0,0" VerticalAlignment="Top" Width="27" RenderTransformOrigin="0.684,0.504" IsTabStop="False" LargeChange="0" Orientation="Vertical" Height="201" Maximum="1" ValueChanged="VolumeChanged" Value="0.25"/>
+        <Label Content="Playlist" HorizontalAlignment="Left" Margin="35,93,0,0" VerticalAlignment="Top" Width="84" FontSize="20"/>
+        <Label x:Name="TimeLabel" Content="00:00 / 00:00" HorizontalAlignment="Left" Margin="195,86,0,0" VerticalAlignment="Top" FontSize="20" Width="129" HorizontalContentAlignment="Right" Height="44"/>
+        <Label Content="VOL" HorizontalAlignment="Left" Margin="700,135,0,0" VerticalAlignment="Top"/>
+        <Button x:Name="Opensongs" Content="Open song(s)..." HorizontalAlignment="Left" Margin="35,298,0,0" VerticalAlignment="Top" Width="300" FontSize="15" Click="Opensongs_Click"/>
+        <Button x:Name="Removesong" Content="Remove selected song" HorizontalAlignment="Left" Margin="35,352,0,0" VerticalAlignment="Top" Width="205" FontSize="15" Click="Removesong_Click"/>
+        <Button x:Name="Saveplaylist" Content="Save playlist..." HorizontalAlignment="Left" Margin="381,298,0,0" VerticalAlignment="Top" Width="300" FontSize="15" Click="Saveplaylist_Click"/>
+        <Button x:Name="Loadplaylist" Content="Load playlist..." HorizontalAlignment="Left" Margin="381,352,0,0" VerticalAlignment="Top" Width="300" FontSize="15" Click="Loadplaylist_Click"/>
+        <Button x:Name="ClearPlaylist" Content="Clear playlist" HorizontalAlignment="Left" Margin="240,352,0,0" VerticalAlignment="Top" Width="95" FontSize="15" Click="ClearPlaylist_Click"/>
 
     </Grid>
 </Window>
