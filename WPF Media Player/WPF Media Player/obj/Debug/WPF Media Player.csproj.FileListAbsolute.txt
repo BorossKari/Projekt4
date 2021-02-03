@@ -12,3 +12,17 @@ C:\Users\user\Desktop\WPF Media Player\WPF Media Player\obj\Debug\WPF_Media_Play
 C:\Users\user\Desktop\WPF Media Player\WPF Media Player\obj\Debug\WPF Media Player.csproj.GenerateResource.cache
 C:\Users\user\Desktop\WPF Media Player\WPF Media Player\obj\Debug\WPF Media Player.exe
 C:\Users\user\Desktop\WPF Media Player\WPF Media Player\obj\Debug\WPF Media Player.pdb
+D:\sulis szar\2020-2021\KompProg\Projekt2 - WPF Media Player\WPF Media Player\WPF Media Player\bin\Debug\WPF Media Player.exe.config
+D:\sulis szar\2020-2021\KompProg\Projekt2 - WPF Media Player\WPF Media Player\WPF Media Player\bin\Debug\WPF Media Player.exe
+D:\sulis szar\2020-2021\KompProg\Projekt2 - WPF Media Player\WPF Media Player\WPF Media Player\bin\Debug\WPF Media Player.pdb
+D:\sulis szar\2020-2021\KompProg\Projekt2 - WPF Media Player\WPF Media Player\WPF Media Player\obj\Debug\WPF Media Player.csprojAssemblyReference.cache
+D:\sulis szar\2020-2021\KompProg\Projekt2 - WPF Media Player\WPF Media Player\WPF Media Player\obj\Debug\MainWindow.g.cs
+D:\sulis szar\2020-2021\KompProg\Projekt2 - WPF Media Player\WPF Media Player\WPF Media Player\obj\Debug\App.g.cs
+D:\sulis szar\2020-2021\KompProg\Projekt2 - WPF Media Player\WPF Media Player\WPF Media Player\obj\Debug\WPF Media Player_MarkupCompile.cache
+D:\sulis szar\2020-2021\KompProg\Projekt2 - WPF Media Player\WPF Media Player\WPF Media Player\obj\Debug\WPF Media Player_MarkupCompile.lref
+D:\sulis szar\2020-2021\KompProg\Projekt2 - WPF Media Player\WPF Media Player\WPF Media Player\obj\Debug\MainWindow.baml
+D:\sulis szar\2020-2021\KompProg\Projekt2 - WPF Media Player\WPF Media Player\WPF Media Player\obj\Debug\WPF Media Player.g.resources
+D:\sulis szar\2020-2021\KompProg\Projekt2 - WPF Media Player\WPF Media Player\WPF Media Player\obj\Debug\WPF_Media_Player.Properties.Resources.resources
+D:\sulis szar\2020-2021\KompProg\Projekt2 - WPF Media Player\WPF Media Player\WPF Media Player\obj\Debug\WPF Media Player.csproj.GenerateResource.cache
+D:\sulis szar\2020-2021\KompProg\Projekt2 - WPF Media Player\WPF Media Player\WPF Media Player\obj\Debug\WPF Media Player.exe
+D:\sulis szar\2020-2021\KompProg\Projekt2 - WPF Media Player\WPF Media Player\WPF Media Player\obj\Debug\WPF Media Player.pdb
