@@ -8,6 +8,6 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-[assembly: System.Windows.Resources.AssemblyAssociatedContentFileAttribute("headphones_icon_small.ico")]
+[assembly: System.Windows.Resources.AssemblyAssociatedContentFileAttribute("headphones_icon_white.png")]
 
 

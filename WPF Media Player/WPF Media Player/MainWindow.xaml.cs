@@ -32,6 +32,7 @@ namespace WPF_Media_Player
         int looptype = 0;
         int loopend = 0;
         int readinggood = 0;
+        int temprandom = -1;
         DispatcherTimer timer = new DispatcherTimer();
         MediaPlayer mediaPlayer = new MediaPlayer();
         public MainWindow()
@@ -39,58 +40,82 @@ namespace WPF_Media_Player
             InitializeComponent();
             mediaPlayer.Volume = 0.25;
             PlayList.SelectedIndex = -1;
-            mediaPlayer.MediaEnded += new EventHandler(Looping);
+            mediaPlayer.MediaEnded += new EventHandler(SongEndedLooping);
         }
-        public void Looping(object sender, EventArgs e)
+        private void SongEndedLooping(object sender, EventArgs e)
         {
-            if (looptype == 0)
+            Looping();
+        }
+        public void Looping()
+        {
+            if (slideruse != 1)
             {
-                if (playedsong != PlayList.Items.Count - 1)
+                if (looptype == 0)
                 {
-                    playedsong++;
-                    PlayList.SelectedIndex = playedsong;
+                    if (playedsong != PlayList.Items.Count - 1)
+                    {
+                        playedsong++;
+                        PlayList.SelectedIndex = playedsong;
+                        mediaPlayer.Open(new Uri(Convert.ToString(PlayList.Items[playedsong])));
+                        mediaPlayer.Play();
+                        mediaPlayer.MediaFailed += Media_Error;
+                    }
+                    else
+                    {
+                        mediaPlayer.Pause();
+                        playing = 0;
+                        PlayPauseButton.Background = (Brush)new BrushConverter().ConvertFrom("#FF3169FF");
+                        loopend = 1;
+                        TimeSlider.IsEnabled = false;
+                    }
+                }
+                else if (looptype == 1)
+                {
+                    if (playedsong != PlayList.Items.Count - 1)
+                    {
+                        playedsong++;
+                        PlayList.SelectedIndex = playedsong;
+                        mediaPlayer.Open(new Uri(Convert.ToString(PlayList.Items[playedsong])));
+                        mediaPlayer.Play();
+                        mediaPlayer.MediaFailed += Media_Error;
+                    }
+                    else if (playedsong == PlayList.Items.Count - 1)
+                    {
+                        playedsong = 0;
+                        PlayList.SelectedIndex = playedsong;
+                        mediaPlayer.Open(new Uri(Convert.ToString(PlayList.Items[playedsong])));
+                        mediaPlayer.Play();
+                        mediaPlayer.MediaFailed += Media_Error;
+                    }
+                }
+                else if (looptype == 2)
+                {
                     mediaPlayer.Open(new Uri(Convert.ToString(PlayList.Items[playedsong])));
                     mediaPlayer.Play();
                     mediaPlayer.MediaFailed += Media_Error;
                 }
-                else
+                else if (looptype == 3)
                 {
-                    mediaPlayer.Pause();
-                    playing = 0;
-                    PlayPauseButton.Background = (Brush)new BrushConverter().ConvertFrom("#FF3169FF");
-                    loopend = 1;
-                    TimeSlider.IsEnabled = false;
+                    RandomSong();
                 }
-            }
-            else if (looptype == 1)
-            {
-                if (playedsong != PlayList.Items.Count - 1)
-                {
-                    playedsong++;
-                    PlayList.SelectedIndex = playedsong;
-                    mediaPlayer.Open(new Uri(Convert.ToString(PlayList.Items[playedsong])));
-                    mediaPlayer.Play();
-                    mediaPlayer.MediaFailed += Media_Error;
-                }
-                else if (playedsong == PlayList.Items.Count - 1)
-                {
-                    playedsong = 0;
-                    PlayList.SelectedIndex = playedsong;
-                    mediaPlayer.Open(new Uri(Convert.ToString(PlayList.Items[playedsong])));
-                    mediaPlayer.Play();
-                    mediaPlayer.MediaFailed += Media_Error;
-                }
-            }
-            else if (looptype == 2)
-            {
-                mediaPlayer.Open(new Uri(Convert.ToString(PlayList.Items[playedsong])));
-                mediaPlayer.Play();
-                mediaPlayer.MediaFailed += Media_Error;
             }
         }
-        private void Opensongs_Click(object sender, RoutedEventArgs e)
+        public void RandomSong()
         {
-            PlayPauseButton.Background = (Brush)new BrushConverter().ConvertFrom("#FF3169FF");
+            Random rando = new Random();
+            do
+            {
+                temprandom = rando.Next(0, PlayList.Items.Count);
+            } while (temprandom == playedsong && PlayList.Items.Count != 1);
+            mediaPlayer.Open(new Uri(Convert.ToString(PlayList.Items[temprandom])));
+            playedsong = temprandom;
+            PlayList.SelectedIndex = playedsong;
+            temprandom = -1;
+            mediaPlayer.Play();
+            mediaPlayer.MediaFailed += Media_Error;
+        }
+        public void InitiateStop()
+        {
             mediaPlayer.Stop();
             playing = 0;
             fullstop = 1;
@@ -101,6 +126,10 @@ namespace WPF_Media_Player
             TimeLabel.Content = "00:00 / 00:00";
             PlayPauseButton.Background = (Brush)new BrushConverter().ConvertFrom("#FF3169FF");
             StopButton.Background = (Brush)new BrushConverter().ConvertFrom("#FFA40000");
+        }
+        private void Opensongs_Click(object sender, RoutedEventArgs e)
+        {
+            InitiateStop();
             try
             {
                 OpenFileDialog openFileDialog = new OpenFileDialog
@@ -130,34 +159,6 @@ namespace WPF_Media_Player
             catch (Exception)
             {
                 MessageBox.Show("An error occured while trying to open the files. Please make sure you selected valid files or didn't cancel the import then try again.", "Error");
-                ExceptionReaction();
-            }
-        }
-        private void PlayList_DoubleClick(object sender, MouseButtonEventArgs e)
-        {
-            try
-            {
-                if (PlayList.Items.Count != 0)
-                {
-                    fullstop = 0;
-                    loopend = 0;
-                    TimeSlider.IsEnabled = true;
-                    mediaPlayer.Open(new Uri(Convert.ToString(PlayList.Items[PlayList.SelectedIndex])));
-                    mediaPlayer.Play();
-                    playing = 1;
-                    playedsong = PlayList.SelectedIndex;
-                    mediaPlayer.MediaFailed += Media_Error;
-                    timer.Interval = TimeSpan.FromSeconds(1);
-                    timer.Tick += TimerRefresher;
-                    timer.Start();
-                    PlayPauseButton.Background = (Brush)new BrushConverter().ConvertFrom("#FFB0C6FF");
-                    StopButton.Background = (Brush)new BrushConverter().ConvertFrom("#FFFF0000");
-                }
-            }
-            catch (Exception)
-            {
-                MessageBox.Show("An error occured while trying to play the file. Please make sure the file is valid and still in the same directory then try again.", "Error");
-                ExceptionReaction();
             }
         }
         private void Removesong_Click(object sender, RoutedEventArgs e)
@@ -171,30 +172,14 @@ namespace WPF_Media_Player
                 if (PlayList.Items.Count == 1)
                 {
                     PlayList.Items.Remove(PlayList.SelectedItem);
-                    mediaPlayer.Stop();
-                    playing = 0;
-                    fullstop = 1;
-                    PlayList.SelectedIndex = -1;
-                    TimeSlider.IsEnabled = false;
-                    TimeSlider.Value = 0;
-                    TimeLabel.Content = "00:00 / 00:00";
-                    PlayPauseButton.Background = (Brush)new BrushConverter().ConvertFrom("#FF3169FF");
-                    StopButton.Background = (Brush)new BrushConverter().ConvertFrom("#FFA40000");
+                    InitiateStop();
                 }
                 else if (PlayList.Items.Count > 1)
                 {
                     if (PlayList.SelectedIndex == playedsong)
                     {
                         PlayList.Items.Remove(PlayList.SelectedItem);
-                        mediaPlayer.Stop();
-                        playing = 0;
-                        fullstop = 1;
-                        PlayList.SelectedIndex = -1;
-                        TimeSlider.IsEnabled = false;
-                        TimeSlider.Value = 0;
-                        TimeLabel.Content = "00:00 / 00:00";
-                        PlayPauseButton.Background = (Brush)new BrushConverter().ConvertFrom("#FF3169FF");
-                        StopButton.Background = (Brush)new BrushConverter().ConvertFrom("#FFA40000");
+                        InitiateStop();
                     }
                     else if (PlayList.SelectedIndex < playedsong)
                     {
@@ -215,30 +200,11 @@ namespace WPF_Media_Player
         private void ClearPlaylist_Click(object sender, RoutedEventArgs e)
         {
             PlayList.Items.Clear();
-            mediaPlayer.Stop();
-            playing = 0;
-            fullstop = 1;
-            playedsong = -1;
-            PlayList.SelectedIndex = -1;
-            TimeSlider.IsEnabled = false;
-            TimeSlider.Value = 0;
-            TimeLabel.Content = "00:00 / 00:00";
-            PlayPauseButton.Background = (Brush)new BrushConverter().ConvertFrom("#FF3169FF");
-            StopButton.Background = (Brush)new BrushConverter().ConvertFrom("#FFA40000");
+            InitiateStop();
         }
-
         private void Saveplaylist_Click(object sender, RoutedEventArgs e)
         {
-            mediaPlayer.Stop();
-            playing = 0;
-            fullstop = 1;
-            playedsong = -1;
-            PlayList.SelectedIndex = -1;
-            TimeSlider.IsEnabled = false;
-            TimeSlider.Value = 0;
-            TimeLabel.Content = "00:00 / 00:00";
-            PlayPauseButton.Background = (Brush)new BrushConverter().ConvertFrom("#FF3169FF");
-            StopButton.Background = (Brush)new BrushConverter().ConvertFrom("#FFA40000");
+            InitiateStop();
             if (PlayList.Items.Count == 0)
             {
                 MessageBox.Show("You can't save an empty playlist. Please add some songs then try again.", "Error");
@@ -263,11 +229,9 @@ namespace WPF_Media_Player
                 catch (Exception)
                 {
                     MessageBox.Show("An error occured while trying to write the file. Please make sure you specified a valid name and that you didn't cancel the save.", "Error");
-                    ExceptionReaction();
                 }
             }
         }
-
         private void Loadplaylist_Click(object sender, RoutedEventArgs e)
         {
             if (PlayList.Items.Count == 0)
@@ -295,7 +259,7 @@ namespace WPF_Media_Player
                     {
                         do
                         {
-                            PlayList.Items.Add(sr.ReadLine());
+                            PlayList.Items.Add(Convert.ToString(sr.ReadLine()));
                         }while (!sr.EndOfStream);
                         sr.Close();
                         readinggood = 0;
@@ -312,21 +276,11 @@ namespace WPF_Media_Player
                 catch (Exception)
                 {
                     MessageBox.Show("An error occured while trying to read the file. Please make sure you specified a valid file and that you didn't cancel the load. Check if the file was made by this program and that its' contents haven't been changed, then try again.", "Error");
-                    ExceptionReaction();
                 }
             }
             else
             {
-                mediaPlayer.Stop();
-                playing = 0;
-                fullstop = 1;
-                playedsong = -1;
-                PlayList.SelectedIndex = -1;
-                TimeSlider.IsEnabled = false;
-                TimeSlider.Value = 0;
-                TimeLabel.Content = "00:00 / 00:00";
-                PlayPauseButton.Background = (Brush)new BrushConverter().ConvertFrom("#FF3169FF");
-                StopButton.Background = (Brush)new BrushConverter().ConvertFrom("#FFA40000");
+                InitiateStop();
                 MessageBoxResult mbr = MessageBox.Show("Loading a playlist will erase your current one. Are you sure?", "Confirmation", MessageBoxButton.YesNo);
                 if (mbr == MessageBoxResult.Yes)
                 {
@@ -355,7 +309,7 @@ namespace WPF_Media_Player
                         {
                             do
                             {
-                                PlayList.Items.Add(sr.ReadLine());
+                                PlayList.Items.Add(Convert.ToString(sr.ReadLine()));
                             } while (!sr.EndOfStream);
                             sr.Close();
                             mediaPlayer.Open(new Uri(Convert.ToString(PlayList.Items[0])));
@@ -372,12 +326,42 @@ namespace WPF_Media_Player
                     catch (Exception)
                     {
                         MessageBox.Show("An error occured while trying to read the file. Please make sure you specified a valid file and that you didn't cancel the load. Check if the file was made by this program and that its' contents haven't been changed, then try again.", "Error");
-                        ExceptionReaction();
                     }
                 }
             }
         }
-
+        private void PlayList_DoubleClick(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        {
+            try
+            {
+                DependencyObject obj = (DependencyObject)e.OriginalSource;
+                while (obj != null && obj != PlayList)
+                {
+                    if (obj.GetType() == typeof(ListBoxItem))
+                    {
+                        fullstop = 0;
+                        loopend = 0;
+                        TimeSlider.IsEnabled = true;
+                        mediaPlayer.Open(new Uri(Convert.ToString(PlayList.Items[PlayList.SelectedIndex])));
+                        mediaPlayer.Play();
+                        playing = 1;
+                        playedsong = PlayList.SelectedIndex;
+                        mediaPlayer.MediaFailed += Media_Error;
+                        timer.Interval = TimeSpan.FromSeconds(1);
+                        timer.Tick += TimerRefresher;
+                        timer.Start();
+                        PlayPauseButton.Background = (Brush)new BrushConverter().ConvertFrom("#FFB0C6FF");
+                        StopButton.Background = (Brush)new BrushConverter().ConvertFrom("#FFFF0000");
+                        break;
+                    }
+                    obj = VisualTreeHelper.GetParent(obj);
+                }
+            }
+            catch (Exception)
+            {
+                MessageBox.Show("An error occured while trying to play the file. Please make sure the file is valid and still in the same directory then try again.", "Error");
+            }
+        }
         private void PlayPauseButton_Click(object sender, RoutedEventArgs e)
         {
             if (fullstop == 0)
@@ -421,16 +405,7 @@ namespace WPF_Media_Player
 
         private void StopButton_Click(object sender, RoutedEventArgs e)
         {
-            mediaPlayer.Stop();
-            playing = 0;
-            fullstop = 1;
-            playedsong = -1;
-            PlayList.SelectedIndex = -1;
-            TimeSlider.IsEnabled = false;
-            TimeSlider.Value = 0;
-            TimeLabel.Content = "00:00 / 00:00";
-            PlayPauseButton.Background = (Brush)new BrushConverter().ConvertFrom("#FF3169FF");
-            StopButton.Background = (Brush)new BrushConverter().ConvertFrom("#FFA40000");
+            InitiateStop();
         }
 
         private void PrevButton_Click(object sender, RoutedEventArgs e)
@@ -441,52 +416,57 @@ namespace WPF_Media_Player
                 TimeSlider.IsEnabled = true;
                 if (mediaPlayer.Position.TotalSeconds < 3 || playing == 0)
                 {
-                    if (playedsong == 0)
+                    if (looptype == 3)
                     {
-                        playedsong = PlayList.Items.Count - 1;
-                        PlayList.SelectedIndex = playedsong;
-                        try
-                        {
-                            TimeSlider.IsEnabled = true;
-                            mediaPlayer.Open(new Uri(Convert.ToString(PlayList.Items[playedsong])));
-                            mediaPlayer.MediaFailed += Media_Error;
-                            if (playing == 1)
-                            {
-                                mediaPlayer.Play();
-                                playing = 1;
-                                timer.Interval = TimeSpan.FromSeconds(1);
-                                timer.Tick += TimerRefresher;
-                                timer.Start();
-                            }
-                        }
-                        catch (Exception)
-                        {
-                            MessageBox.Show("An error occured while trying to play the file. Please make sure the file is valid and still in the same directory then try again.", "Error");
-                            ExceptionReaction();
-                        }
+                        RandomSong();
                     }
                     else
                     {
-                        playedsong -= 1;
-                        PlayList.SelectedIndex = playedsong;
-                        try
+                        if (playedsong == 0)
                         {
-                            TimeSlider.IsEnabled = true;
-                            mediaPlayer.Open(new Uri(Convert.ToString(PlayList.Items[playedsong])));
-                            mediaPlayer.MediaFailed += Media_Error;
-                            if (playing == 1)
+                            playedsong = PlayList.Items.Count - 1;
+                            PlayList.SelectedIndex = playedsong;
+                            try
                             {
-                                mediaPlayer.Play();
-                                playing = 1;
-                                timer.Interval = TimeSpan.FromSeconds(1);
-                                timer.Tick += TimerRefresher;
-                                timer.Start();
+                                TimeSlider.IsEnabled = true;
+                                mediaPlayer.Open(new Uri(Convert.ToString(PlayList.Items[playedsong])));
+                                mediaPlayer.MediaFailed += Media_Error;
+                                if (playing == 1)
+                                {
+                                    mediaPlayer.Play();
+                                    playing = 1;
+                                    timer.Interval = TimeSpan.FromSeconds(1);
+                                    timer.Tick += TimerRefresher;
+                                    timer.Start();
+                                }
+                            }
+                            catch (Exception)
+                            {
+                                MessageBox.Show("An error occured while trying to play the file. Please make sure the file is valid and still in the same directory then try again.", "Error");
                             }
                         }
-                        catch (Exception)
+                        else
                         {
-                            MessageBox.Show("An error occured while trying to play the file. Please make sure the file is valid and still in the same directory then try again.", "Error");
-                            ExceptionReaction();
+                            playedsong -= 1;
+                            PlayList.SelectedIndex = playedsong;
+                            try
+                            {
+                                TimeSlider.IsEnabled = true;
+                                mediaPlayer.Open(new Uri(Convert.ToString(PlayList.Items[playedsong])));
+                                mediaPlayer.MediaFailed += Media_Error;
+                                if (playing == 1)
+                                {
+                                    mediaPlayer.Play();
+                                    playing = 1;
+                                    timer.Interval = TimeSpan.FromSeconds(1);
+                                    timer.Tick += TimerRefresher;
+                                    timer.Start();
+                                }
+                            }
+                            catch (Exception)
+                            {
+                                MessageBox.Show("An error occured while trying to play the file. Please make sure the file is valid and still in the same directory then try again.", "Error");
+                            }
                         }
                     }
                 }
@@ -503,52 +483,57 @@ namespace WPF_Media_Player
             if (fullstop == 0)
             {
                 loopend = 0;
-                if (playedsong == PlayList.Items.Count - 1)
+                if (looptype == 3 && playing == 1)
                 {
-                    playedsong = 0;
-                    PlayList.SelectedIndex = playedsong;
-                    try
-                    {
-                        TimeSlider.IsEnabled = true;
-                        mediaPlayer.Open(new Uri(Convert.ToString(PlayList.Items[playedsong])));
-                        mediaPlayer.MediaFailed += Media_Error;
-                        if (playing == 1)
-                        {
-                            mediaPlayer.Play();
-                            playing = 1;
-                            timer.Interval = TimeSpan.FromSeconds(1);
-                            timer.Tick += TimerRefresher;
-                            timer.Start();
-                        }
-                    }
-                    catch (Exception)
-                    {
-                        MessageBox.Show("An error occured while trying to play the file. Please make sure the file is valid and still in the same directory then try again.", "Error");
-                        ExceptionReaction();
-                    }
+                    RandomSong();
                 }
                 else
                 {
-                    playedsong += 1;
-                    PlayList.SelectedIndex = playedsong;
-                    try
+                    if (playedsong == PlayList.Items.Count - 1)
                     {
-                        TimeSlider.IsEnabled = true;
-                        mediaPlayer.Open(new Uri(Convert.ToString(PlayList.Items[playedsong])));
-                        mediaPlayer.MediaFailed += Media_Error;
-                        if (playing == 1)
+                        playedsong = 0;
+                        PlayList.SelectedIndex = playedsong;
+                        try
                         {
-                            mediaPlayer.Play();
-                            playing = 1;
-                            timer.Interval = TimeSpan.FromSeconds(1);
-                            timer.Tick += TimerRefresher;
-                            timer.Start();
+                            TimeSlider.IsEnabled = true;
+                            mediaPlayer.Open(new Uri(Convert.ToString(PlayList.Items[playedsong])));
+                            mediaPlayer.MediaFailed += Media_Error;
+                            if (playing == 1)
+                            {
+                                mediaPlayer.Play();
+                                playing = 1;
+                                timer.Interval = TimeSpan.FromSeconds(1);
+                                timer.Tick += TimerRefresher;
+                                timer.Start();
+                            }
+                        }
+                        catch (Exception)
+                        {
+                            MessageBox.Show("An error occured while trying to play the file. Please make sure the file is valid and still in the same directory then try again.", "Error");
                         }
                     }
-                    catch (Exception)
+                    else
                     {
-                        MessageBox.Show("An error occured while trying to play the file. Please make sure the file is valid and still in the same directory then try again.", "Error");
-                        ExceptionReaction();
+                        playedsong += 1;
+                        PlayList.SelectedIndex = playedsong;
+                        try
+                        {
+                            TimeSlider.IsEnabled = true;
+                            mediaPlayer.Open(new Uri(Convert.ToString(PlayList.Items[playedsong])));
+                            mediaPlayer.MediaFailed += Media_Error;
+                            if (playing == 1)
+                            {
+                                mediaPlayer.Play();
+                                playing = 1;
+                                timer.Interval = TimeSpan.FromSeconds(1);
+                                timer.Tick += TimerRefresher;
+                                timer.Start();
+                            }
+                        }
+                        catch (Exception)
+                        {
+                            MessageBox.Show("An error occured while trying to play the file. Please make sure the file is valid and still in the same directory then try again.", "Error");
+                        }
                     }
                 }
             }
@@ -567,6 +552,11 @@ namespace WPF_Media_Player
                 RepeatButton.Content = "🔂";
             }
             else if (looptype == 2)
+            {
+                looptype = 3;
+                RepeatButton.Content = "🔀";
+            }
+            else if (looptype == 3)
             {
                 looptype = 0;
                 RepeatButton.Background = (Brush)new BrushConverter().ConvertFrom("#FF9B9B9B");
@@ -599,6 +589,10 @@ namespace WPF_Media_Player
             timer.Interval = TimeSpan.FromSeconds(1);
             timer.Tick += TimerRefresher;
             timer.Start();
+            if (TimeSlider.Value == TimeSlider.Maximum)
+            {
+                Looping();
+            }
         }
         private void TimeSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
@@ -619,32 +613,10 @@ namespace WPF_Media_Player
         }
         private void Media_Error(object sender, EventArgs e)
         {
-            mediaPlayer.Stop();
-            playing = 0;
-            fullstop = 1;
-            PlayList.Items.Remove(playedsong);
+            PlayList.Items.RemoveAt(PlayList.SelectedIndex);
             PlayList.Items.Refresh();
-            playedsong = -1;
-            PlayList.SelectedIndex = -1;
-            TimeSlider.IsEnabled = false;
-            TimeSlider.Value = 0;
-            TimeLabel.Content = "00:00 / 00:00";
-            PlayPauseButton.Background = (Brush)new BrushConverter().ConvertFrom("#FF3169FF");
-            StopButton.Background = (Brush)new BrushConverter().ConvertFrom("#FFA40000");
+            InitiateStop();
             MessageBox.Show("A playback error occured. The selected file was removed from the playlist. Please check if the file isn't damaged or is still in the same directory.", "Error");
-        }
-        private void ExceptionReaction()
-        {
-            mediaPlayer.Stop();
-            playing = 0;
-            fullstop = 1;
-            playedsong = -1;
-            PlayList.SelectedIndex = -1;
-            TimeSlider.IsEnabled = false;
-            TimeSlider.Value = 0;
-            TimeLabel.Content = "00:00 / 00:00";
-            PlayPauseButton.Background = (Brush)new BrushConverter().ConvertFrom("#FF3169FF");
-            StopButton.Background = (Brush)new BrushConverter().ConvertFrom("#FFA40000");
         }
     }
 }
